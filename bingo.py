@@ -31,13 +31,17 @@ def random_number():
     drawn_number = random.randint(1, 75)
     return drawn_number
 
-def save_number():
-    number = random_number()
-    print(f"The number is {number}")
-    with open('data2.txt', 'w') as file:
-        file.write(str(number))
-    return number
+def save_number(id, number):
+    if id is None:
+        result = collection.insert_one({"tests": [number]})
+        inserted_id = result.inserted_id
+        return inserted_id
+    else:
+        find = {"_id": id}
+        update = {"$push": {"tests": {"$each": [number]}}}
+        collection.update_one(find, update)
 
+# The route created always call the function below themself
 @app.route('/random_number', methods=['GET'])
 
 def number_generation():
