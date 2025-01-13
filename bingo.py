@@ -7,26 +7,12 @@ import time
 
 load_dotenv()
 app = Flask(__name__)
-print(f"The number is...")
-print(f"Diretório atual: {os.getcwd()}")
 
 CONNECTION_STRING = os.getenv("MONGO_URI")
 
-print(f"CONNECTION_STRING: {CONNECTION_STRING}")
-
 client = MongoClient(CONNECTION_STRING)
-print("Conexão bem-sucedida")
-
 db = client.get_database("my_database")
-print(f"db: {db}")
 collection = db.get_collection("bingo_test")
-print(f"collection: {collection}")
-data = {
-    "name": "Jony",
-    "team": "São Paulo"
-}
-
-collection.insert_one(data)
 
 def random_number():
     drawn_number = random.randint(1, 75)
