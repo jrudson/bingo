@@ -3,6 +3,7 @@ from flask import Flask, jsonify, request
 from dotenv import load_dotenv
 import os
 from pymongo import MongoClient
+import time
 
 load_dotenv()
 app = Flask(__name__)
@@ -45,8 +46,32 @@ def save_number(id, number):
 @app.route('/random_number', methods=['GET'])
 
 def number_generation():
-    number = save_number()
-    return jsonify({'drawn_number': number}), 200
+    first_number = random_number()
+    save = save_number(None, first_number)
+    i = 1
+    x = 0
+    max_loop = 75
+    # I need to change this logic to improve the code working
+    # A idea is put all the numbers in an array and draw lots some, remove this and draw lot again without the number drawn
+    while i < max_loop:
+        print(f"i: {i}")
+        data = list(collection.find({"_id": save}))
+        this_id = data[0]['_id']
+        next_number = random_number()
+        while next_number in data[0]['tests']:
+            x += 1
+            next_number = random_number()
+            print(next_number)
+        save_number(this_id, next_number)
+        i += 1
+        time.sleep(2)
+    data = list(collection.find({'_id': save}))
+    new_data = data[0]['tests']
+    print(f"x: {x}")
+    print(f"new_data: {new_data}")
+    sorted_data = sorted(new_data)
+    print(f"sorted_data: {sorted_data}")
+    return jsonify({'drawn_number': sorted_data}), 200
 
 if __name__ == '__main__':
     app.run(debug=True)
