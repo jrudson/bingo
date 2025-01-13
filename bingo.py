@@ -73,5 +73,14 @@ def number_generation():
     print(f"sorted_data: {sorted_data}")
     return jsonify({'drawn_number': sorted_data}), 200
 
+@app.route('/get_data', methods=['GET'])
+def get_data():
+    data = list(collection.find({}))
+    for item in data:
+        item['_id'] = str(item['_id'])
+        print(item['_id'])
+    return jsonify(data), 200
+
+
 if __name__ == '__main__':
     app.run(debug=True)
